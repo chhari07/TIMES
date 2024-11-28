@@ -24,7 +24,7 @@ const Aboutus = () => {
 				
 				<p className="text-xl font-semibold leading-tight">ANANT AGARWAL</p>
 				<p className="dark:text-gray-600"> developer</p>
-				<p className="dark:text-gray-600"> 221B062</p>
+				<p className="dark:text-gray-600"> 221B061/p>
 			</div>
 		</div>
 	</div>
