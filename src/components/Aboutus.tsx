@@ -14,18 +14,7 @@ const Aboutus = () => {
 				<p className="dark:text-gray-600"> developer</p>
 				<p className="dark:text-gray-600"> 221B055</p>
 			</div>
-			<div className="flex flex-col justify-center m-8 text-center">
-				
-				<p className="text-xl font-semibold leading-tight">AKANSHA KUMARI</p>
-				<p className="dark:text-gray-600"> developer</p>
-				<p className="dark:text-gray-600"> 221B043</p>
-			</div>
-			<div className="flex flex-col justify-center m-8 text-center">
-				
-				<p className="text-xl font-semibold leading-tight">ANANT AGARWAL</p>
-				<p className="dark:text-gray-600"> developer</p>
-				<p className="dark:text-gray-600"> 221B061/p>
-			</div>
+			
 		</div>
 	</div>
 </section>
