@@ -12,7 +12,7 @@ const Aboutus = () => {
 				
 				<p className="text-xl font-semibold leading-tight">AMAN KUMAR CHHARI</p>
 				<p className="dark:text-gray-600"> developer</p>
-				<p className="dark:text-gray-600"> 221B055</p>
+				
 			</div>
 			
 		</div>
