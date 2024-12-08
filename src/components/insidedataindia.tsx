@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -6,6 +7,7 @@ interface NewsArticle {
   title?: string;
   description?: string;
   link?: string;
+  image_url?: string; // Handle images from API if available
 }
 
 interface NewsApiResponse {
@@ -18,93 +20,98 @@ const InsidedataIndia: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchNews = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        const response = await axios.get<NewsApiResponse>(
-          "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&q=world&country=in&category=education,environment,food,politics,technology"
-        );
+    try {
+      const response = await axios.get<NewsApiResponse>(
+        "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&q=world&country=in&category=education,environment,food,politics,technology"
+      );
 
-        if (response.data.status === "success" && Array.isArray(response.data.results)) {
-          setNewsData(response.data.results);
-        } else {
-          throw new Error("Unexpected API response structure.");
-        }
-      } catch (err) {
-        setError((err as Error).message || "Something went wrong while fetching news.");
-      } finally {
-        setLoading(false);
+      if (response.data.status === "success" && Array.isArray(response.data.results)) {
+        // Filter duplicates by title and limit to 12 unique articles
+        const uniqueNews = Array.from(
+          new Map(
+            response.data.results.map((article) => [article.title, article])
+          ).values()
+        ).slice(0, 12);
+
+        setNewsData(uniqueNews);
+      } else {
+        throw new Error("Unexpected API response structure.");
       }
-    };
+    } catch (err) {
+      setError((err as Error).message || "Something went wrong while fetching news.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchNews();
   }, []);
 
   return (
-    <div className="bg-black text-white">
-      <div className="container mx-auto mt-32 grid grid-cols-1 lg:ml-72 lg:grid-cols-12 gap-4 p-4">
-        <div className="flex flex-col p-4 lg:col-span-8">
-          <div className="flex justify-start mb-4">
-            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-white text-black">
-              Latest News
-            </span>
+    <div className="bg-black text-white min-h-screen">
+      <div className="container mx-auto mt-36 p-4">
+        <div className="mb-6">
+          <h1 className="text-3xl font-semibold">Latest News in India</h1>
+          <p className="text-gray-300">Stay updated with the latest headlines and top stories.</p>
+        </div>
+
+        {loading && (
+          <div className="flex justify-center items-center" aria-live="polite">
+            <div className="w-8 h-8 border-4 border-t-4 border-blue-600 border-solid rounded-full animate-spin" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-semibold mb-4">Latest News in India</h1>
+        )}
 
-          {loading && (
-            <div className="flex justify-center items-center">
-              <div className="w-8 h-8 border-4 border-t-4 border-violet-600 border-solid rounded-full animate-spin" />
-            </div>
-          )}
+        {error && (
+          <div className="text-red-500">
+            <p>Error: {error}</p>
+            <button onClick={fetchNews} className="mt-2 text-blue-500 hover:underline">
+              Retry
+            </button>
+          </div>
+        )}
 
-          {error && (
-            <div className="text-red-500">
-              <p>Error: {error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-2 text-violet-600 hover:underline"
-              >
-                Retry
-              </button>
-            </div>
-          )}
+        {!loading && newsData.length === 0 && !error && (
+          <p>No news articles available at the moment.</p>
+        )}
 
-          {newsData.length === 0 && !loading && !error && (
-            <p>No news articles available at the moment.</p>
-          )}
-
-          {newsData.length > 0 &&
-            newsData.map((article, index) => (
-              <div key={index} className="border-b border-gray-700 pb-4 mb-4">
-                <h2 className="text-lg md:text-xl font-bold">{article.title || "Untitled Article"}</h2>
-                <p className="text-sm md:text-base text-gray-300">
-                  {article.description || "Description is not available for this article."}
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {newsData.map((article, index) => (
+            <div
+              key={index}
+              className="border border-gray-700 rounded-lg shadow-lg bg-white text-black"
+            >
+              {article.image_url ? (
+                <img
+                  src={article.image_url}
+                  alt={article.title || "News Image"}
+                  className="w-full h-40 object-cover rounded-t-lg"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gray-300 rounded-t-lg flex items-center justify-center">
+                  <span className="text-gray-500">No Image Available</span>
+                </div>
+              )}
+              <div className="p-4">
+                <h2 className="text-xl font-bold mb-2">
+                  {article.title || "Untitled Article"}
+                </h2>
+                
                 <a
-                  rel="noopener noreferrer"
                   href={article.link || "#"}
                   target="_blank"
-                  className="inline-flex items-center text-sm text-violet-400 hover:underline"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline text-sm font-medium"
                 >
-                  <span>Read more</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="w-4 h-4 ml-2"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
+                  Read more
                 </a>
               </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>
