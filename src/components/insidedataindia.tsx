@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
+
+
 interface NewsArticle {
   title?: string;
   description?: string;
@@ -90,6 +93,8 @@ const InsidedataIndia: React.FC = () => {
                   src={article.image_url}
                   alt={article.title || "News Image"}
                   className="w-full h-40 object-cover rounded-t-lg"
+                  width={640} // Provide width (optional, you can set it based on your layout)
+                  height={240} // Provide height (optional, you can set it based on your layout)
                 />
               ) : (
                 <div className="w-full h-48 bg-gray-300 rounded-t-lg flex items-center justify-center">

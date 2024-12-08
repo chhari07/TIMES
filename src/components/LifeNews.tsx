@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
 interface NewsArticle {
   title?: string;
   description?: string;
@@ -28,7 +29,7 @@ const LifeNews: React.FC = () => {
         if (response.data.status === "success" && Array.isArray(response.data.results)) {
           // Remove duplicates based on the `link` property
           const uniqueArticles = response.data.results.filter(
-            (value: string, index: any, self: any[]) =>
+            (value: NewsArticle, index: number, self: NewsArticle[]) =>
               index === self.findIndex((t) => t.link === value.link)
           );
           setNewsData(uniqueArticles);
@@ -86,6 +87,8 @@ const LifeNews: React.FC = () => {
                 <img
                   src={article.image_url}
                   alt={article.title || "News Image"}
+                  width={500} // Add width for optimization
+                  height={200} // Add height for optimization
                   className="w-full h-40 object-cover rounded-t-lg"
                 />
               ) : (
@@ -97,7 +100,7 @@ const LifeNews: React.FC = () => {
                 <h2 className="text-xl font-bold mb-2">
                   {article.title || "Untitled Article"}
                 </h2>
-               
+
                 <a
                   href={article.link || "#"}
                   target="_blank"

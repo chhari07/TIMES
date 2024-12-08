@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
 interface NewsArticle {
   title: string;
   description: string;
@@ -15,32 +16,32 @@ const TechNews: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      setError(null);
+  const fetchNews = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        const response = await axios.get(
-          "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&country=cf,cn,in,kp,us&category=technology"
-        );
+    try {
+      const response = await axios.get(
+        "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&country=cf,cn,in,kp,us&category=technology"
+      );
 
-        if (response.data.status === "success" && Array.isArray(response.data.results)) {
-          setNewsData(response.data.results); // Set the fetched data directly without filtering
-        } else {
-          throw new Error("Unexpected API response structure.");
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message || "Something went wrong while fetching news.");
-        } else {
-          setError("Something went wrong while fetching news.");
-        }
-      } finally {
-        setLoading(false);
+      if (response.data.status === "success" && Array.isArray(response.data.results)) {
+        setNewsData(response.data.results);
+      } else {
+        throw new Error("Unexpected API response structure.");
       }
-    };
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || "Something went wrong while fetching news.");
+      } else {
+        setError("Something went wrong while fetching news.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchNews();
   }, []);
 
@@ -61,7 +62,7 @@ const TechNews: React.FC = () => {
         {error && (
           <div className="text-red-500">
             <p>Error: {error}</p>
-            <button onClick={() => window.location.reload()} className="mt-2 text-blue-500 hover:underline">
+            <button onClick={fetchNews} className="mt-2 text-blue-500 hover:underline">
               Retry
             </button>
           </div>
@@ -81,7 +82,10 @@ const TechNews: React.FC = () => {
                 <img
                   src={article.image_url}
                   alt={article.title || "News Image"}
+                  width={500} // Adjust width
+                  height={200} // Adjust height
                   className="w-full h-40 object-cover rounded-t-lg"
+                 
                 />
               ) : (
                 <div className="w-full h-48 bg-gray-300 rounded-t-lg flex items-center justify-center">
@@ -92,7 +96,6 @@ const TechNews: React.FC = () => {
                 <h2 className="text-xl font-bold mb-2">
                   {article.title || "Untitled Article"}
                 </h2>
-               
                 <a
                   href={article.link || "#"}
                   target="_blank"
