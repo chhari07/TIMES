@@ -45,8 +45,10 @@ function Navbar({ className }: { className?: string }) {
         <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href="/indianews">India News </HoveredLink>
             <HoveredLink href="/worldnews">World News</HoveredLink>
+            <HoveredLink href="/Stocknews">Stock News</HoveredLink>
             <HoveredLink href="/technews">Tech News</HoveredLink>
             <HoveredLink href="/lifestylenews">LifeStyle News</HoveredLink>
+            <HoveredLink href="/Othernews">Other</HoveredLink>
             
             </div>
         </MenuItem>
