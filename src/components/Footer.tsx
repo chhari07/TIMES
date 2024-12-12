@@ -2,7 +2,7 @@
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-black    text-white py-10">
+    <footer className="w-full bg-black lg:mt-80   text-white py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Logo Section */}
         <div className="flex justify-center mb-6">

@@ -3,14 +3,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
-
-
+// Define interfaces for the news article and API response
 interface NewsArticle {
   title?: string;
   description?: string;
   link?: string;
-  image_url?: string; // Handle images from API if available
+  image_url?: string; // Handle images if available
 }
 
 interface NewsApiResponse {
@@ -23,6 +21,7 @@ const InsidedataIndia: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch the news from the API
   const fetchNews = async () => {
     setLoading(true);
     setError(null);
@@ -32,13 +31,11 @@ const InsidedataIndia: React.FC = () => {
         "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&q=world&country=in&category=education,environment,food,politics,technology"
       );
 
+      // Ensure the response structure is correct and filter for unique articles by title
       if (response.data.status === "success" && Array.isArray(response.data.results)) {
-        // Filter duplicates by title and limit to 12 unique articles
         const uniqueNews = Array.from(
-          new Map(
-            response.data.results.map((article) => [article.title, article])
-          ).values()
-        ).slice(0, 12);
+          new Map(response.data.results.map((article) => [article.title, article])).values()
+        ).slice(0, 12); // Limit to 12 unique articles
 
         setNewsData(uniqueNews);
       } else {
@@ -51,24 +48,27 @@ const InsidedataIndia: React.FC = () => {
     }
   };
 
+  // Fetch news when the component mounts
   useEffect(() => {
     fetchNews();
   }, []);
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <div className="container mx-auto mt-36 p-4">
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold">Latest News in India</h1>
-          <p className="text-gray-300">Stay updated with the latest headlines and top stories.</p>
+    <div className="bg-black text-white">
+      <div className="container mx-auto mt-32 p-4">
+        <div className="mb-6 lg:ml-20">
+          <h1 className="text-3xl font-semibold">Latest Tech News</h1>
+          <p className="text-gray-300">Stay updated with the latest tech trends and headlines.</p>
         </div>
 
+        {/* Loading spinner */}
         {loading && (
           <div className="flex justify-center items-center" aria-live="polite">
             <div className="w-8 h-8 border-4 border-t-4 border-blue-600 border-solid rounded-full animate-spin" />
           </div>
         )}
 
+        {/* Error message and retry button */}
         {error && (
           <div className="text-red-500">
             <p>Error: {error}</p>
@@ -78,42 +78,40 @@ const InsidedataIndia: React.FC = () => {
           </div>
         )}
 
+        {/* No data available message */}
         {!loading && newsData.length === 0 && !error && (
           <p>No news articles available at the moment.</p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Card Layout for News Articles */}
+        <div className="grid grid-cols-1 lg:ml-28 ml-5 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {newsData.map((article, index) => (
             <div
               key={index}
-              className="border border-gray-700 rounded-lg shadow-lg bg-white text-black"
+              className="max-w-xs w-full group/card border border-gray-700 rounded-md shadow-xl bg-black   opacity-100  font-bold  text-white"
             >
-              {article.image_url ? (
-                <img
-                  src={article.image_url}
-                  alt={article.title || "News Image"}
-                  className="w-full h-40 object-cover rounded-t-lg"
-                  width={640} // Provide width (optional, you can set it based on your layout)
-                  height={240} // Provide height (optional, you can set it based on your layout)
-                />
-              ) : (
-                <div className="w-full h-48 bg-gray-300 rounded-t-lg flex items-center justify-center">
-                  <span className="text-gray-500">No Image Available</span>
+              <div
+                className="cursor-pointer overflow-hidden relative card h-96 rounded-md shadow-xl max-w-sm mx-auto backgroundImage flex flex-col justify-between p-4 bg-cover"
+                style={{
+                  backgroundImage: `url(${article.image_url || "https://images.unsplash.com/photo-1544077960-604201fe74bc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1651&q=80"})`,
+                }}
+              >
+                <div className="text content mt-14">
+                  <h1 className="font-bold text-xl md:text-2xl text-white relative z-10">
+                    {article.title || "Untitled Article"}
+                  </h1>
+                  <p className="font-normal text-sm text-gray-50 relative z-10 my-4">
+                    {article.description || "Description not available."}
+                  </p>
+                  <a
+                    href={article.link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm font-medium"
+                  >
+                    Read more
+                  </a>
                 </div>
-              )}
-              <div className="p-4">
-                <h2 className="text-xl font-bold mb-2">
-                  {article.title || "Untitled Article"}
-                </h2>
-                
-                <a
-                  href={article.link || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline text-sm font-medium"
-                >
-                  Read more
-                </a>
               </div>
             </div>
           ))}

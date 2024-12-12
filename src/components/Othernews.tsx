@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-
 interface NewsArticle {
   title: string;
   description: string;
@@ -22,7 +21,7 @@ const OtherNews: React.FC = () => {
 
     try {
       const response = await axios.get(
-        "  https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&country=in&language=en&category=other   "
+        "https://newsdata.io/api/1/news?apikey=pub_60272c028e393a4834346618e4e4db87599b0&country=in&language=en&category=other"
       );
 
       if (response.data.status === "success" && Array.isArray(response.data.results)) {
@@ -49,8 +48,7 @@ const OtherNews: React.FC = () => {
     <div className="bg-black text-white">
       <div className="container mx-auto mt-32 p-4">
         <div className="mb-6">
-          <h1 className="text-3xl font-semibold">other News</h1>
-         
+          <h1 className="text-3xl font-semibold">Other News</h1>
         </div>
 
         {loading && (
@@ -72,38 +70,34 @@ const OtherNews: React.FC = () => {
           <p>No news articles available at the moment.</p>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1   ml-5 lg:ml-24   md:grid-cols-2 lg:grid-cols-3 gap-6">
           {newsData.map((article, index) => (
             <div
               key={index}
-              className="border border-gray-700 rounded-lg shadow-lg bg-white text-black"
+              className="max-w-xs w-full group/card border border-gray-700 rounded-md shadow-xl bg-black opacity-100 text-white"
             >
-              {article.image_url ? (
-                <img
-                  src={article.image_url}
-                  alt={article.title || "News Image"}
-                  width={500} // Adjust width
-                  height={200} // Adjust height
-                  className="w-full h-40 object-cover rounded-t-lg"
-                 
-                />
-              ) : (
-                <div className="w-full h-48 bg-gray-300 rounded-t-lg flex items-center justify-center">
-                  <span className="text-gray-500">No Image Available</span>
+              <div
+                className="cursor-pointer overflow-hidden relative card h-96 rounded-md shadow-xl max-w-sm mx-auto backgroundImage flex flex-col justify-between p-4 bg-cover"
+                style={{
+                  backgroundImage: `url(${article.image_url || "https://images.unsplash.com/photo-1544077960-604201fe74bc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1651&q=80"})`,
+                }}
+              >
+                <div className="text content mt-14">
+                  <h1 className="font-bold text-xl md:text-2xl text-white relative z-10">
+                    {article.title || "Untitled Article"}
+                  </h1>
+                  <p className="font-normal text-sm text-gray-50 relative z-10 my-4">
+                    {article.description || "Description not available."}
+                  </p>
+                  <a
+                    href={article.link || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline text-sm font-medium"
+                  >
+                    Read more
+                  </a>
                 </div>
-              )}
-              <div className="p-4">
-                <h2 className="text-xl font-bold mb-2">
-                  {article.title || "Untitled Article"}
-                </h2>
-                <a
-                  href={article.link || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline text-sm font-medium"
-                >
-                  Read more
-                </a>
               </div>
             </div>
           ))}
